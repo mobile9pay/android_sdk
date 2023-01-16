@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">SDK 9Pay</string>
+    <string name="thanh_toan">Thanh toán</string>
+    <string name="nap_tien">Nạp tiền</string>
+    <string name="chuyen_tien">Chuyển tiền</string>
+    <string name="tien_ich">Lịch sử GD</string>
+    <string name="search_product">Search product</string>
+    <string name="deal">Flash \n Deal</string>
+    <string name="bill">Bill</string>
+    <string name="game">Game</string>
+    <string name="mua_the_dv">Mua thẻ\ndịch vụ</string>
+    <string name="more">More</string>
+    <string name="special">Đặc biệt cho bạn</string>
+    <string name="see_more">Xem thêm</string>
+    <string name="quet_ma">Quét mã</string>
+    <string name="tt_hoa_don">Thanh toán\nhóa đơn</string>
+    <string name="mua_the_dt">Mua thẻ \nđiện thoại</string>
+    <string name="nap_tien_dt">Nạp tiền\nĐT</string>
+    <string name="mua_the_game">Mua thẻ\ngame</string>
+    <string name="nap_data">Nạp data\n 3g/4g</string>
+</resources>
