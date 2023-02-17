@@ -13,7 +13,7 @@ public class Constants {
 
     // API
     public static final String STAGING_API = "https://stg-api.9pay.mobi";
-    public static final String SANDBOX_API = "http://sand-api.9pay.vn";
+    public static final String SANDBOX_API = "https://sand-api.9pay.vn";
     public static final String PROD_API = "https://api.9pay.vn";
 
 }

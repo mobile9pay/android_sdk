@@ -30,6 +30,7 @@ import java.util.Map;
 
 @SuppressLint("StaticFieldLeak")
 public class NPayLibrary {
+    public static final String STAGING = "staging";
     public static final String SANDBOX = "sandbox";
     public static final String PRODUCTION = "prod";
     private static final String TAG = NPayLibrary.class.getSimpleName();
