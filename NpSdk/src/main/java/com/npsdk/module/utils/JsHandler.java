@@ -4,6 +4,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -43,6 +44,7 @@ public class JsHandler {
         getDeviceID,
         depositResult,
         requestCamera,
+        openSchemaApp,
     }
 
     public JsHandler(Activity activity) {
@@ -128,6 +130,9 @@ public class JsHandler {
                 case requestCamera:
                     _requestCamera(activity);
                     break;
+                case openSchemaApp:
+                    openSchemaApp(paramJson.getString("schema"));
+                    break;
                 default:
             }
         } catch (Exception e) {
@@ -139,5 +144,16 @@ public class JsHandler {
         ActivityCompat.requestPermissions(activity,
                 new String[] {Manifest.permission.CAMERA},
                 PERMISSION_REQUEST_CODE);
+    }
+
+    void openSchemaApp(String schema) {
+        if (schema == null || schema.isEmpty()) return;
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(schema));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(intent);
+        } catch (ActivityNotFoundException ex) {
+            Log.d("OPEN APP", ex.getMessage());
+        }
     }
 }

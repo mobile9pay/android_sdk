@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.ll_mua_the_game:
                 Log.d(TAG, "onClick: ll_mua_the_game");
-                Toast.makeText(getApplicationContext(), "Dịch vụ này đang phát triển", Toast.LENGTH_SHORT).show();
+                NPayLibrary.getInstance().openWallet(Actions.MG_CARD);
                 break;
             case R.id.ll_mua_the_dich_vu:
                 Log.d(TAG, "onClick: ll_mua_the_dich_vu");

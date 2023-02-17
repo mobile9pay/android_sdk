@@ -10,11 +10,6 @@ public class Flavor {
 
     public void configFlavor(String env) {
         switch (env) {
-            case NPayLibrary.STAGING:
-                baseUrl = Constants.STAGING_URL;
-                prefKey = NPayLibrary.STAGING;
-                baseApi = Constants.STAGING_API;
-                break;
             case NPayLibrary.SANDBOX:
                 baseUrl = Constants.SANDBOX_URL;
                 prefKey = NPayLibrary.SANDBOX;

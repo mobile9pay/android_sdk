@@ -15,6 +15,6 @@ public class Actions {
     public static final String SHOP = "shop";
 
 
-    public static final String BANK_LINK_MANAGE = "link_bank";
+    public static final String MG_CARD = "buy_mg_card";
     public static final String ADD_LINK_BANK = "link_bank_detail";
 }

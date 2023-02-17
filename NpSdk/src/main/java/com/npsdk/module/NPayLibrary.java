@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.webkit.WebStorage;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -29,7 +30,6 @@ import java.util.Map;
 
 @SuppressLint("StaticFieldLeak")
 public class NPayLibrary {
-    public static final String STAGING = "staging";
     public static final String SANDBOX = "sandbox";
     public static final String PRODUCTION = "prod";
     private static final String TAG = NPayLibrary.class.getSimpleName();
@@ -141,6 +141,9 @@ public class NPayLibrary {
 
     public void logout() {
         WebStorage.getInstance().deleteAllData();
+        Preference.remove(activity, NPayLibrary.getInstance().sdkConfig.getEnv() + Constants.ACCESS_TOKEN);
+        Preference.remove(activity, NPayLibrary.getInstance().sdkConfig.getEnv() + Constants.REFRESH_TOKEN);
+        Toast.makeText(activity, "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
     }
 
     public void close() {
