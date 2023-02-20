@@ -138,7 +138,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void getActionMerchantSuccess() {
-                Toast.makeText(MainActivity.this, "getActionMerchantSuccess", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onLogoutSuccessful() {
+
             }
         });
 

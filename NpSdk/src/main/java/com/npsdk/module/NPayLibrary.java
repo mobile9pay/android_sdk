@@ -144,7 +144,7 @@ public class NPayLibrary {
         WebStorage.getInstance().deleteAllData();
         Preference.remove(activity, NPayLibrary.getInstance().sdkConfig.getEnv() + Constants.ACCESS_TOKEN);
         Preference.remove(activity, NPayLibrary.getInstance().sdkConfig.getEnv() + Constants.REFRESH_TOKEN);
-        Toast.makeText(activity, "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
+        listener.onLogoutSuccessful();
     }
 
     public void close() {

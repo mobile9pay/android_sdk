@@ -15,4 +15,6 @@ public interface LibListener {
 	public void onError(int errorCode, String message);
 
 	void getActionMerchantSuccess();
+
+	void onLogoutSuccessful();
 }
