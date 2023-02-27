@@ -13,11 +13,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.webkit.ClientCertRequest;
+import android.webkit.HttpAuthHandler;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +47,7 @@ public class NPayActivity extends AppCompatActivity {
     private View btnClose;
     private Toolbar toolbar;
     private BroadcastReceiver changeUrlBR;
+    private RelativeLayout rlOverlay;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -74,7 +81,7 @@ public class NPayActivity extends AppCompatActivity {
             if (route.equals("payment_merchant_verify")) {
                 String orderId = jsonObject.getString("order_id");
                 if (orderId.isEmpty()) {
-                    NPayLibrary.getInstance().listener.onError(249, "Sai định dạng url thanh toán.");
+                    Toast.makeText(NPayActivity.this, "Sai định dạng url", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
                 }
@@ -82,6 +89,7 @@ public class NPayActivity extends AppCompatActivity {
                 webView2.clearCache(true);
                 webView2.clearHistory();
                 webView2.setVisibility(View.VISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
                 webView2.loadUrl(orderId);
                 showOrHideToolbar();
                 //tạm thời dùng delay 30s để callback payment faield
@@ -89,7 +97,7 @@ public class NPayActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (!webView2.getUrl().contains("/merchant/payment/")) {
+                        if (webView2 != null && !webView2.getUrl().contains("/merchant/payment/")) {
                             //thông báo cho merchant thông báo có lỗi khi k thể load đc url payment
                             NPayLibrary.getInstance().listener.onError(249, "Sai định dạng url thanh toán.");
                             finish();
@@ -161,6 +169,7 @@ public class NPayActivity extends AppCompatActivity {
                         webView2.clearCache(true);
                         webView2.clearHistory();
                         webView2.setVisibility(View.GONE);
+                        rlOverlay.setVisibility(View.GONE);
                         webView.setVisibility(View.VISIBLE);
                         webView.loadUrl(builder.toString());
 
@@ -263,6 +272,7 @@ public class NPayActivity extends AppCompatActivity {
         webView2 = findViewById(R.id.webView2);
         toolbar = findViewById(R.id.toolbar);
         btnClose = findViewById(R.id.btnClose);
+        rlOverlay = findViewById(R.id.rl_overlay);
     }
 
     private void settingWebview(WebView webView, boolean isSet, JsHandler jsHandler) {
