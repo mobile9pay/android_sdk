@@ -58,7 +58,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.mobile9pay'
                 artifactId = 'NpSdk'
-                version = '1.0.12'
+                version = '1.0.13'
             }
         }
     }
