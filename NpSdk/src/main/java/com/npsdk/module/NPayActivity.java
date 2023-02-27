@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
@@ -45,17 +47,178 @@ public class NPayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_npay);
-        webView = findViewById(R.id.webView);
-        webView2 = findViewById(R.id.webView2);
-        toolbar = findViewById(R.id.toolbar);
-        btnClose = findViewById(R.id.btnClose);
+        findView();
         closeButtonWebview();
         JsHandler jsHandler = new JsHandler(this);
         String data = getIntent().getStringExtra("data");
         Log.d(TAG, "onCreate: data ==   " + data);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction("webViewBroadcast");
         filter.addAction("nativeBroadcast");
+        listentChangeUrlBroadcast();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(changeUrlBR, filter);
+
+        settingWebview(webView, true, jsHandler);
+        settingWebview(webView2, false, jsHandler);
+
+        setUpweb1Client();
+        setUpWeb2Client(data);
+
+        try {
+            Uri.Builder builder = new Uri.Builder();
+            JSONObject jsonObject = new JSONObject(data);
+            String route = jsonObject.getString("route");
+
+            if (route.equals("payment_merchant_verify")) {
+                String orderId = jsonObject.getString("order_id");
+                if (orderId.isEmpty()) {
+                    NPayLibrary.getInstance().listener.onError(249, "Sai định dạng url thanh toán.");
+                    finish();
+                    return;
+                }
+                webView.setVisibility(View.GONE);
+                webView2.clearCache(true);
+                webView2.clearHistory();
+                webView2.setVisibility(View.VISIBLE);
+                webView2.loadUrl(orderId);
+                showOrHideToolbar();
+                //tạm thời dùng delay 30s để callback payment faield
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!webView2.getUrl().contains("/merchant/payment/")) {
+                            //thông báo cho merchant thông báo có lỗi khi k thể load đc url payment
+                            NPayLibrary.getInstance().listener.onError(249, "Sai định dạng url thanh toán.");
+                            finish();
+                        }
+                        handler.removeCallbacksAndMessages(null);
+                    }
+                }, 30 * 1000);
+                return;
+            }
+
+            if (route.equals(Actions.SHOP)) {
+                webView.setVisibility(View.GONE);
+                webView2.setVisibility(View.VISIBLE);
+                webView2.loadUrl("https://stg-shop.9pay.mobi/hoa-don-thanh-toan/");
+                showOrHideToolbar();
+            } else {
+                builder.scheme("https")
+                        .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
+                        .appendPath("direct")
+                        .appendQueryParameter("route", jsonObject.getString("route"))
+                        .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
+                        .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
+                        .appendQueryParameter("App-version-Code", "375")
+                        .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
+                        .appendQueryParameter("platform", "android");
+                if (jsonObject.has("order_id")) {
+                    builder.appendQueryParameter("order_id", Utils.convertUrlToOrderId(jsonObject.getString("order_id")));
+                }
+                Log.d(TAG, "onCreate: Flavor.baseUrl ==   " + builder);
+                webView2.clearCache(true);
+                webView2.clearHistory();
+                webView.loadUrl(builder.toString());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void setUpWeb2Client(String data) {
+        webView2.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, "shouldOverrideUrlLoading 2: url ==   " + url);
+
+                if (url.endsWith("close-webview")) {
+                    clearWeb2();
+                    return false;
+                }
+
+                //dành cho thanh toán merchant, bóc tách orderID
+                if (url.contains("/merchant/payment/")) {
+                    try {
+                        Uri.Builder builder = new Uri.Builder();
+                        JSONObject jsonObject = new JSONObject(data);
+
+                        builder.scheme("https")
+                                .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
+                                .appendPath("direct")
+                                .appendQueryParameter("route", jsonObject.getString("route"))
+                                .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
+                                .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
+                                .appendQueryParameter("App-version-Code", "375")
+                                .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
+                                .appendQueryParameter("platform", "android")
+                                .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url));
+                        webView2.clearCache(true);
+                        webView2.clearHistory();
+                        webView2.setVisibility(View.GONE);
+                        webView.setVisibility(View.VISIBLE);
+                        webView.loadUrl(builder.toString());
+
+                    } catch (Exception e) {
+                    }
+                    return false;
+
+                }
+
+                if (url.startsWith(Flavor.baseUrl) && !url.contains("kyc")) {
+                    clearWeb2();
+                    webView.loadUrl(url);
+                    return false;
+                }
+                webView2.loadUrl(url);
+                return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                //TODO xử lý load lỗi
+                Log.d(TAG, "onPageFinished: " + url);
+            }
+        });
+    }
+
+    private void setUpweb1Client() {
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (!url.contains(Flavor.baseUrl)) {
+                    webView.setVisibility(View.GONE);
+                    webView2.clearCache(true);
+                    webView2.clearHistory();
+                    webView2.setVisibility(View.VISIBLE);
+                    webView2.loadUrl(url);
+                    return false;
+                }
+                return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
+
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                showOrHideToolbar();
+                super.onPageStarted(view, url, favicon);
+            }
+
+        });
+    }
+
+    private void listentChangeUrlBroadcast() {
         changeUrlBR = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -93,37 +256,32 @@ public class NPayActivity extends AppCompatActivity {
                 }
             }
         };
+    }
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(changeUrlBR, filter);
+    private void findView() {
+        webView = findViewById(R.id.webView);
+        webView2 = findViewById(R.id.webView2);
+        toolbar = findViewById(R.id.toolbar);
+        btnClose = findViewById(R.id.btnClose);
+    }
 
-
+    private void settingWebview(WebView webView, boolean isSet, JsHandler jsHandler) {
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        webView2.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        webView.addJavascriptInterface(jsHandler, "JsHandler");
-
+        if (isSet) {
+            webView.addJavascriptInterface(jsHandler, "JsHandler");
+        }
         WebSettings webSettings = webView.getSettings();
-        WebSettings webSettings2 = webView2.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings2.setJavaScriptEnabled(true);
+        if (isSet) {
+            webSettings.setJavaScriptEnabled(true);
+        }
         webSettings.setAllowFileAccess(true);
-        webSettings2.setAllowFileAccess(true);
         webSettings.setDatabaseEnabled(true);
-        webSettings2.setDatabaseEnabled(true);
         webSettings.setLoadsImagesAutomatically(true);
-        webSettings2.setLoadsImagesAutomatically(true);
         webSettings.setDomStorageEnabled(true);
-        webSettings2.setDomStorageEnabled(true);
         webSettings.setSupportMultipleWindows(true);
-        webSettings2.setSupportMultipleWindows(true);
-
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-        webSettings2.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
         webSettings.setMediaPlaybackRequiresUserGesture(false);
-        webSettings2.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setPluginState(WebSettings.PluginState.ON);
-        webSettings2.setPluginState(WebSettings.PluginState.ON);
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -131,147 +289,6 @@ public class NPayActivity extends AppCompatActivity {
                 request.grant(request.getResources());
             }
         });
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (!url.contains(Flavor.baseUrl)) {
-                    webView.setVisibility(View.GONE);
-                    webView2.clearCache(true);
-                    webView2.clearHistory();
-                    webView2.setVisibility(View.VISIBLE);
-                    webView2.loadUrl(url);
-                    return false;
-                }
-                return false;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-            }
-
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                showOrHideToolbar();
-                super.onPageStarted(view, url, favicon);
-            }
-
-        });
-
-
-        webView2.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onPermissionRequest(PermissionRequest request) {
-                request.grant(request.getResources());
-            }
-        });
-        webView2.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, "shouldOverrideUrlLoading 2: url ==   " + url);
-
-                if (url.endsWith("close-webview")) {
-                    clearWeb2();
-                    return false;
-                }
-
-                if (url.contains("/merchant/payment/")) {
-                    try {
-                        Uri.Builder builder = new Uri.Builder();
-                        JSONObject jsonObject = new JSONObject(data);
-
-                        builder.scheme("https")
-                                .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
-                                .appendPath("direct")
-                                .appendQueryParameter("route", jsonObject.getString("route"))
-                                .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
-                                .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
-                                .appendQueryParameter("App-version-Code", "375")
-                                .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
-                                .appendQueryParameter("platform", "android")
-                                .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url));
-                        webView2.clearCache(true);
-                        webView2.clearHistory();
-                        webView2.setVisibility(View.GONE);
-                        webView.setVisibility(View.VISIBLE);
-                        webView.loadUrl(builder.toString());
-
-                    } catch (Exception e) {
-
-                    }
-
-
-                    return false;
-
-                }
-
-                if (url.startsWith(Flavor.baseUrl) && !url.contains("kyc")) {
-                    clearWeb2();
-                    webView.loadUrl(url);
-                    return false;
-                }
-                webView2.loadUrl(url);
-                return false;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-            }
-        });
-
-
-        try {
-            Uri.Builder builder = new Uri.Builder();
-            JSONObject jsonObject = new JSONObject(data);
-            String route = jsonObject.getString("route");
-
-            if (route.equals("payment_merchant_verify")) {
-                String orderId = jsonObject.getString("order_id");
-                if (orderId.isEmpty()) {
-                    Toast.makeText(NPayActivity.this, "Sai định dạng url", Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
-                }
-                webView.setVisibility(View.GONE);
-                webView2.clearCache(true);
-                webView2.clearHistory();
-                webView2.setVisibility(View.VISIBLE);
-                webView2.loadUrl(orderId);
-                showOrHideToolbar();
-                return;
-            }
-
-            if (route.equals(Actions.SHOP)) {
-                webView.setVisibility(View.GONE);
-                webView2.setVisibility(View.VISIBLE);
-                webView2.loadUrl("https://stg-shop.9pay.mobi/hoa-don-thanh-toan/");
-                showOrHideToolbar();
-            } else {
-                builder.scheme("https")
-                        .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
-                        .appendPath("direct")
-                        .appendQueryParameter("route", jsonObject.getString("route"))
-                        .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
-                        .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
-                        .appendQueryParameter("App-version-Code", "375")
-                        .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
-                        .appendQueryParameter("platform", "android");
-                if (jsonObject.has("order_id")) {
-                    builder.appendQueryParameter("order_id", Utils.convertUrlToOrderId(jsonObject.getString("order_id")));
-                }
-                Log.d(TAG, "onCreate: Flavor.baseUrl ==   " + builder);
-                webView2.clearCache(true);
-                webView2.clearHistory();
-                webView.loadUrl(builder.toString());
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
 
