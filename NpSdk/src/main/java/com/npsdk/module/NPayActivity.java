@@ -13,13 +13,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.webkit.ClientCertRequest;
-import android.webkit.HttpAuthHandler;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -112,7 +107,7 @@ public class NPayActivity extends AppCompatActivity {
             if (route.equals(Actions.SHOP)) {
                 webView.setVisibility(View.GONE);
                 webView2.setVisibility(View.VISIBLE);
-                webView2.loadUrl("https://stg-shop.9pay.mobi/hoa-don-thanh-toan/");
+                webView2.loadUrl(Flavor.baseShop + "/hoa-don-thanh-toan/");
                 showOrHideToolbar();
             } else {
                 builder.scheme("https")

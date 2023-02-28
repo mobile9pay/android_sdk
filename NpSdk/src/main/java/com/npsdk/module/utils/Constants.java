@@ -16,4 +16,8 @@ public class Constants {
     public static final String SANDBOX_API = "https://sand-api.9pay.vn";
     public static final String PROD_API = "https://api.9pay.vn";
 
+    // SHOP
+    public static final String PROD_SHOP = "https://shop.9pay.vn";
+    public static final String SANDBOX_SHOP = "https://sand-shop.9pay.vn";
+    public static final String STAGING_SHOP = "https://stg-shop.9pay.mobi";
 }

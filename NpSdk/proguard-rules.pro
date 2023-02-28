@@ -19,11 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-#-keep class com.npsdk.module.NPayLibrary** {*;}
-#-keep class com.npsdk.module.NPayActivity** {*;}
-#-keep class com.npsdk.module.model.SdkConfig** {*;}
-#
-#-keep class com.npsdk.ActionListener** {*;}
-#-keep class com.npsdk.LibListener** {*;}
-#-keep class com.npsdk.module.model.DataAction** {*;}
-#-keep class com.npsdk.module.utils.Actions** {*;}

@@ -138,16 +138,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void getActionMerchantSuccess() {
-
+                Toast.makeText(MainActivity.this, "getActionMerchantSuccess", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onLogoutSuccessful() {
-
+                System.out.println("Logout success!");
             }
         });
 
-        NPayLibrary.getInstance().getInfoAccount();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -156,9 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.ll_quet_ma:
                 Log.d(TAG, "onClick: ll_rut_tien");
-//                NPayLibrary.getInstance().getInfoAccount();
-                NPayLibrary.getInstance().openWallet(Actions.OPEN_WALLET);
-//                Toast.makeText(getApplicationContext(), "Dịch vụ này đang phát triển", Toast.LENGTH_SHORT).show();
+                NPayLibrary.getInstance().openWallet(Actions.QR);
                 break;
             case R.id.ll_nap_tien:
                 Log.d(TAG, "onClick: ll_nap_tien");
@@ -227,7 +224,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_thanh_toan:
                 //paste url thanh toán vào hàm pay
-                NPayLibrary.getInstance().pay(edtUrlPaygate.getText().toString());
+                String test = "https://sand-payment.9pay.vn/portal?baseEncode=eyJtZXJjaGFudEtleSI6ImRMNXBDcCIsI\n" +
+                        "nRpbWUiOjE2Nzc0ODg4MzIsImludm9pY2Vfbm8iOiJFczRsVVN4eSIsImFtb3VudCI6MTAwMDAsImRlc\n" +
+                        "2NyaXB0aW9uIjoiVGhpcyBpcyBkZXNjcmlwdGlvbiIsInJldHVybl91cmwiOiJodHRwOi8vZmNkY2M0N\n" +
+                        "zY3YWNiLm5ncm9rLmlvLyIsImJhY2tfdXJsIjoiaHR0cDovL2ZjZGNjNDc2N2FjYi5uZ3Jvay5pby8iL\n" +
+                        "CJtZXRob2QiOiI5UEFZIn0%3D&signature=qmfxThHdSJGxwpQilcwJ0zYkPpyZaJkdwrJe1FysRuY%\n" +
+                        "3D\n";
+                NPayLibrary.getInstance().pay(test);
                 break;
 
         }
@@ -236,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-
     }
 
 }

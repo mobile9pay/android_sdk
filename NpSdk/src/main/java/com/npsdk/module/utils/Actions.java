@@ -13,6 +13,7 @@ public class Actions {
     public static final String TOPUP_DATA_CARD = "data_card";
     public static final String BUY_SERVICES_CARD = "service_card";
     public static final String SHOP = "shop";
+    public static final String QR = "scan_qr_code";
 
 
     public static final String MG_CARD = "buy_mg_card";
