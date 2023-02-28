@@ -20,6 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class com.npsdk.module.NPayLibrary** {*;}
+-keep class com.npsdk.module.NPayActivity** {*;}
 -keep class com.npsdk.module.model.SdkConfig** {*;}
 
 -keep class com.npsdk.ActionListener** {*;}
