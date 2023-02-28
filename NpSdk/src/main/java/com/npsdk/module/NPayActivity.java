@@ -48,6 +48,7 @@ public class NPayActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BroadcastReceiver changeUrlBR;
     private RelativeLayout rlOverlay;
+    private JsHandler jsHandler;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -56,7 +57,7 @@ public class NPayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_npay);
         findView();
         closeButtonWebview();
-        JsHandler jsHandler = new JsHandler(this);
+        jsHandler = new JsHandler(this);
         String data = getIntent().getStringExtra("data");
         Log.d(TAG, "onCreate: data ==   " + data);
 
@@ -67,8 +68,8 @@ public class NPayActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(changeUrlBR, filter);
 
-        settingWebview(webView, true, jsHandler);
-        settingWebview(webView2, false, jsHandler);
+        settingWebview(webView);
+        settingWebview(webView2);
 
         setUpweb1Client();
         setUpWeb2Client(data);
@@ -275,15 +276,12 @@ public class NPayActivity extends AppCompatActivity {
         rlOverlay = findViewById(R.id.rl_overlay);
     }
 
-    private void settingWebview(WebView webView, boolean isSet, JsHandler jsHandler) {
+    @SuppressLint("SetJavaScriptEnabled")
+    private void settingWebview(WebView webView) {
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        if (isSet) {
-            webView.addJavascriptInterface(jsHandler, "JsHandler");
-        }
+        webView.addJavascriptInterface(jsHandler, "JsHandler");
         WebSettings webSettings = webView.getSettings();
-        if (isSet) {
-            webSettings.setJavaScriptEnabled(true);
-        }
+        webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setLoadsImagesAutomatically(true);
