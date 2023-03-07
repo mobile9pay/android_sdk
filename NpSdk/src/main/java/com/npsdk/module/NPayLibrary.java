@@ -154,11 +154,12 @@ public class NPayLibrary {
         LocalBroadcastManager.getInstance(activity).sendBroadcast(intentClose);
     }
 
-    private Map<String, String> getHeader() {
+    public Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
         header.put("Merchant-Code", sdkConfig.getMerchantCode());
         header.put("Merchant-Uid", sdkConfig.getUid());
         header.put("env", sdkConfig.getEnv());
+        header.put("App-Type", "SDK");
         return header;
     }
 

@@ -15,12 +15,15 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -45,6 +48,8 @@ public class NPayActivity extends AppCompatActivity {
     private RelativeLayout rlOverlay;
     private JsHandler jsHandler;
 
+    Map<String, String> headerWebView = NPayLibrary.getInstance().getHeader();
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,6 @@ public class NPayActivity extends AppCompatActivity {
 
         setUpweb1Client();
         setUpWeb2Client(data);
-
         try {
             Uri.Builder builder = new Uri.Builder();
             JSONObject jsonObject = new JSONObject(data);
@@ -86,7 +90,7 @@ public class NPayActivity extends AppCompatActivity {
                 webView2.clearHistory();
                 webView2.setVisibility(View.VISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
-                webView2.loadUrl(orderId);
+                webView2.loadUrl(orderId, headerWebView);
                 showOrHideToolbar();
                 //tạm thời dùng delay 30s để callback payment faield
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -107,7 +111,7 @@ public class NPayActivity extends AppCompatActivity {
             if (route.equals(Actions.SHOP)) {
                 webView.setVisibility(View.GONE);
                 webView2.setVisibility(View.VISIBLE);
-                webView2.loadUrl(Flavor.baseShop + "/hoa-don-thanh-toan/");
+                webView2.loadUrl(Flavor.baseShop + "/hoa-don-thanh-toan/", headerWebView);
                 showOrHideToolbar();
             } else {
                 builder.scheme("https")
@@ -125,7 +129,7 @@ public class NPayActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: Flavor.baseUrl ==   " + builder);
                 webView2.clearCache(true);
                 webView2.clearHistory();
-                webView.loadUrl(builder.toString());
+                webView.loadUrl(builder.toString(), headerWebView);
             }
 
         } catch (JSONException e) {
@@ -167,7 +171,7 @@ public class NPayActivity extends AppCompatActivity {
                         webView2.setVisibility(View.GONE);
                         rlOverlay.setVisibility(View.GONE);
                         webView.setVisibility(View.VISIBLE);
-                        webView.loadUrl(builder.toString());
+                        webView.loadUrl(builder.toString(), headerWebView);
 
                     } catch (Exception e) {
                     }
@@ -177,10 +181,10 @@ public class NPayActivity extends AppCompatActivity {
 
                 if (url.startsWith(Flavor.baseUrl) && !url.contains("kyc")) {
                     clearWeb2();
-                    webView.loadUrl(url);
+                    webView.loadUrl(url, headerWebView);
                     return false;
                 }
-                webView2.loadUrl(url);
+                webView2.loadUrl(url, headerWebView);
                 return false;
             }
 
@@ -202,7 +206,7 @@ public class NPayActivity extends AppCompatActivity {
                     webView2.clearCache(true);
                     webView2.clearHistory();
                     webView2.setVisibility(View.VISIBLE);
-                    webView2.loadUrl(url);
+                    webView2.loadUrl(url, headerWebView);
                     return false;
                 }
                 return false;
@@ -238,6 +242,7 @@ public class NPayActivity extends AppCompatActivity {
                         Map<String, String> extraHeaders = new HashMap<>();
                         String token = intent.getStringExtra("token");
                         if (token != null) extraHeaders.put("Authorization", token);
+                        extraHeaders.putAll(NPayLibrary.getInstance().getHeader());
                         webView.setVisibility(View.GONE);
                         webView2.setVisibility(View.VISIBLE);
                         webView2.loadUrl(getURL, extraHeaders);
@@ -247,7 +252,7 @@ public class NPayActivity extends AppCompatActivity {
                     if (!getURL.startsWith(Flavor.baseUrl)) {
                         webView.setVisibility(View.GONE);
                         webView2.setVisibility(View.VISIBLE);
-                        webView2.loadUrl(getURL);
+                        webView2.loadUrl(getURL, headerWebView);
                     }
                     showOrHideToolbar();
 
@@ -257,6 +262,7 @@ public class NPayActivity extends AppCompatActivity {
                         case "close":
                             finish();
                             break;
+
                     }
                 }
             }
