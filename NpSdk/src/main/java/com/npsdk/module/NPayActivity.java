@@ -15,15 +15,12 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -41,14 +38,13 @@ import java.util.Map;
 
 public class NPayActivity extends AppCompatActivity {
     public static final String TAG = NPayActivity.class.getName();
+    Map<String, String> headerWebView = NPayLibrary.getInstance().getHeader();
     private WebView webView, webView2;
     private View btnClose;
     private Toolbar toolbar;
     private BroadcastReceiver changeUrlBR;
     private RelativeLayout rlOverlay;
     private JsHandler jsHandler;
-
-    Map<String, String> headerWebView = NPayLibrary.getInstance().getHeader();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override

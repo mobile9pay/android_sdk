@@ -6,9 +6,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +24,6 @@ import com.npsdk.module.NPayLibrary;
 import com.npsdk.module.model.DataAction;
 import com.npsdk.module.model.SdkConfig;
 import com.npsdk.module.utils.Actions;
-import com.npsdk.module.utils.Flavor;
 
 import java.util.List;
 
@@ -114,36 +111,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NPayLibrary.getInstance().init(MainActivity.this, sdkConfig, new LibListener() {
             @Override
             public void onLoginSuccessful() {
-//                Toast.makeText(MainActivity.this, "onLoginSuccessful", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPaySuccessful() {
-//                Toast.makeText(MainActivity.this, "onPaySuccessful", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void getInfoSuccess(String phone, String balance, String ekycStatus) {
-//                Toast.makeText(MainActivity.this, phone + ", " + balance + ", " + ekycStatus, Toast.LENGTH_SHORT).show();
                 userInfo.setText("Hi," + phone);
                 txtMoney.setText(balance + "đ");
             }
 
             @Override
             public void onError(int errorCode, String message) {
-//                Toast.makeText(MainActivity.this, errorCode + " - " + message, Toast.LENGTH_SHORT).show();
 
-            }
-
-            @Override
-            public void getActionMerchantSuccess() {
-//                Toast.makeText(MainActivity.this, "getActionMerchantSuccess", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onLogoutSuccessful() {
                 System.out.println("Logout success!");
+            }
+
+            @Override
+            public void onCloseSDK() {
+
             }
         });
 

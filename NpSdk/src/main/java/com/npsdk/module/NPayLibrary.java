@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.webkit.WebStorage;
-import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -34,11 +33,11 @@ public class NPayLibrary {
     public static final String SANDBOX = "sandbox";
     public static final String PRODUCTION = "prod";
     private static final String TAG = NPayLibrary.class.getSimpleName();
+    public static Flavor flavor;
     private static NPayLibrary INSTANCE;
     public SdkConfig sdkConfig;
     public Activity activity;
     public LibListener listener;
-    public static Flavor flavor;
 
     public static NPayLibrary getInstance() {
         if (INSTANCE == null) {
@@ -152,6 +151,7 @@ public class NPayLibrary {
         intentClose.setAction("nativeBroadcast");
         intentClose.putExtra("action", "close");
         LocalBroadcastManager.getInstance(activity).sendBroadcast(intentClose);
+        listener.onCloseSDK();
     }
 
     public Map<String, String> getHeader() {

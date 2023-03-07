@@ -24,33 +24,13 @@ import org.json.JSONObject;
 public class JsHandler {
 
     private static final int PERMISSION_REQUEST_CODE = 999;
-    private static String TAG = JsHandler.class.getSimpleName();
+    private static final String TAG = JsHandler.class.getSimpleName();
 
-    private Activity activity;
-
-    private enum switchCommandJS {
-        open9PayApp,
-        close,
-        openOtherUrl,
-        share,
-        copy,
-        call,
-        message,
-        clearToken,
-        onLoggedInSuccess,
-        onPaymentSuccess,
-        onError,
-        getAllToken,
-        getDeviceID,
-        depositResult,
-        requestCamera,
-        openSchemaApp,
-    }
+    private final Activity activity;
 
     public JsHandler(Activity activity) {
         this.activity = activity;
     }
-
 
     @JavascriptInterface
     public void executeFunction(String command, String params) {
@@ -142,7 +122,7 @@ public class JsHandler {
 
     void _requestCamera(Activity activity) {
         ActivityCompat.requestPermissions(activity,
-                new String[] {Manifest.permission.CAMERA},
+                new String[]{Manifest.permission.CAMERA},
                 PERMISSION_REQUEST_CODE);
     }
 
@@ -155,5 +135,24 @@ public class JsHandler {
         } catch (ActivityNotFoundException ex) {
             Log.d("OPEN APP", ex.getMessage());
         }
+    }
+
+    private enum switchCommandJS {
+        open9PayApp,
+        close,
+        openOtherUrl,
+        share,
+        copy,
+        call,
+        message,
+        clearToken,
+        onLoggedInSuccess,
+        onPaymentSuccess,
+        onError,
+        getAllToken,
+        getDeviceID,
+        depositResult,
+        requestCamera,
+        openSchemaApp,
     }
 }
