@@ -8,27 +8,41 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.npsdk.module.NPayActivity;
 import com.npsdk.module.NPayLibrary;
 
 import org.json.JSONObject;
 
 public class JsHandler {
 
-	private static final int PERMISSION_REQUEST_CODE = 999;
+	public static final int PERMISSION_REQUEST_CODE = 999;
 	private static final String TAG = JsHandler.class.getSimpleName();
 
 	private final Activity activity;
 
 	public JsHandler(Activity activity) {
 		this.activity = activity;
+	}
+
+	public static void sendStatusCamera(boolean status) {
+		String jsExcute = "javascript: window.postMessage({\"permission_camera\": " + status + "}, \"*\")";
+		Handler mainHandler = new Handler(Looper.getMainLooper());
+		Runnable myRunnable = () -> {
+			NPayActivity.webView.loadUrl(jsExcute);
+		};
+		mainHandler.post(myRunnable);
 	}
 
 	@JavascriptInterface
@@ -102,7 +116,7 @@ public class JsHandler {
 					Preference.save(activity, NPayLibrary.getInstance().sdkConfig.getEnv() + Constants.REFRESH_TOKEN, paramJson.getString("refresh_token"));
 					break;
 				case requestCamera:
-					_requestCamera(activity);
+					requestCamera(activity);
 					break;
 				case openSchemaApp:
 					openSchemaApp(paramJson.getString("schema"));
@@ -117,10 +131,19 @@ public class JsHandler {
 		}
 	}
 
-	void _requestCamera(Activity activity) {
+	private void requestCamera(Activity activity) {
+		if (isHavePermissionCamera()) {
+			sendStatusCamera(true);
+			return;
+		}
 		ActivityCompat.requestPermissions(activity,
 				new String[]{Manifest.permission.CAMERA},
 				PERMISSION_REQUEST_CODE);
+	}
+
+	private boolean isHavePermissionCamera() {
+		int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
+		return result == PackageManager.PERMISSION_GRANTED;
 	}
 
 	void openSchemaApp(String schema) {

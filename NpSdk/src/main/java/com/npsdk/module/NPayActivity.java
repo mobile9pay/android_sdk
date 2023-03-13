@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -39,7 +41,7 @@ import java.util.Map;
 public class NPayActivity extends AppCompatActivity {
     public static final String TAG = NPayActivity.class.getName();
     Map<String, String> headerWebView = NPayLibrary.getInstance().getHeader();
-    private WebView webView, webView2;
+    public static WebView webView, webView2;
     private View btnClose;
     private Toolbar toolbar;
     private BroadcastReceiver changeUrlBR;
@@ -359,5 +361,17 @@ public class NPayActivity extends AppCompatActivity {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == JsHandler.PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                JsHandler.sendStatusCamera(true);
+            } else {
+                JsHandler.sendStatusCamera(false);
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
