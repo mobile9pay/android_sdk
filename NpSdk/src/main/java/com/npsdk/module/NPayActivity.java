@@ -149,7 +149,7 @@ public class NPayActivity extends AppCompatActivity {
                 }
 
                 //dành cho thanh toán merchant, bóc tách orderID
-                if (url.contains("/merchant/payment/")) {
+                if (url.contains("/merchant/payment/") || url.contains("/thanh-toan-qr/")) {
                     try {
                         Uri.Builder builder = new Uri.Builder();
                         JSONObject jsonObject = new JSONObject(data);
