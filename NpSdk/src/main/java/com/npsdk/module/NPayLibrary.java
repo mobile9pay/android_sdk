@@ -139,7 +139,7 @@ public class NPayLibrary {
 
 	private String paymentData(String urlPayment) {
 		Map<String, String> data = getHeader();
-		data.put("route", "payment_merchant_verify");
+		data.put("route", Constants.VERIFY_PAYMENT_ROUTE);
 		data.put("order_id", urlPayment);
 		JSONObject obj = new JSONObject(data);
 		return obj.toString();

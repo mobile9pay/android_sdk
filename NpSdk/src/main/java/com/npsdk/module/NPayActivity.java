@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.npsdk.module.utils.Actions;
+import com.npsdk.module.utils.Constants;
 import com.npsdk.module.utils.Flavor;
 import com.npsdk.module.utils.JsHandler;
 import com.npsdk.module.utils.Utils;
@@ -76,7 +77,7 @@ public class NPayActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(data);
             String route = jsonObject.getString("route");
 
-            if (route.equals("payment_merchant_verify")) {
+            if (route.equals(Constants.VERIFY_PAYMENT_ROUTE)) {
                 String orderId = jsonObject.getString("order_id");
                 if (orderId.isEmpty()) {
                     Toast.makeText(NPayActivity.this, "Sai định dạng url", Toast.LENGTH_SHORT).show();
@@ -157,7 +158,7 @@ public class NPayActivity extends AppCompatActivity {
                         builder.scheme("https")
                                 .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
                                 .appendPath("direct")
-                                .appendQueryParameter("route", jsonObject.getString("route"))
+                                .appendQueryParameter("route", Constants.VERIFY_PAYMENT_ROUTE)
                                 .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
                                 .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
                                 .appendQueryParameter("App-version-Code", "375")
