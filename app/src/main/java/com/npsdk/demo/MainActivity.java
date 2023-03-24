@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		btnClose.setOnClickListener(this);
 		btnThanhToan.setOnClickListener(this);
 
-		SdkConfig sdkConfig = new SdkConfig.Builder().merchantCode("sdk_test").uid("uid").env(NPayLibrary.SANDBOX).brandColor(0xff15AE62).build();
+		SdkConfig sdkConfig = new SdkConfig.Builder().merchantCode("sdk_test").uid("uid").env(NPayLibrary.STAGING).brandColor(0xff15AE62).build();
 		initSdk(sdkConfig);
 
 	}

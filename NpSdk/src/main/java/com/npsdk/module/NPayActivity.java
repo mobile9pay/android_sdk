@@ -86,6 +86,7 @@ public class NPayActivity extends AppCompatActivity {
                 }
                 webView.setVisibility(View.GONE);
                 webView2.clearCache(true);
+                webView2.loadUrl("javascript:document.open();document.close();");
                 webView2.clearHistory();
                 webView2.setVisibility(View.VISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
@@ -127,6 +128,7 @@ public class NPayActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "onCreate: Flavor.baseUrl ==   " + builder);
                 webView2.clearCache(true);
+                webView2.loadUrl("javascript:document.open();document.close();");
                 webView2.clearHistory();
                 webView.loadUrl(builder.toString(), headerWebView);
             }
@@ -166,6 +168,7 @@ public class NPayActivity extends AppCompatActivity {
                                 .appendQueryParameter("platform", "android")
                                 .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url));
                         webView2.clearCache(true);
+                        webView2.loadUrl("javascript:document.open();document.close();");
                         webView2.clearHistory();
                         webView2.setVisibility(View.GONE);
                         rlOverlay.setVisibility(View.GONE);
@@ -203,6 +206,7 @@ public class NPayActivity extends AppCompatActivity {
                 if (!url.contains(Flavor.baseUrl)) {
                     webView.setVisibility(View.GONE);
                     webView2.clearCache(true);
+                    webView2.loadUrl("javascript:document.open();document.close();");
                     webView2.clearHistory();
                     webView2.setVisibility(View.VISIBLE);
                     webView2.loadUrl(url, headerWebView);
@@ -234,6 +238,7 @@ public class NPayActivity extends AppCompatActivity {
                 if (intent.getAction().equals("webViewBroadcast")) {
                     if (webView2 != null) {
                         webView2.clearCache(true);
+                        webView2.loadUrl("javascript:document.open();document.close();");
                         webView2.clearHistory();
                     }
                     String getURL = intent.getStringExtra("url");
@@ -322,6 +327,7 @@ public class NPayActivity extends AppCompatActivity {
             webView2.clearHistory();
             webView2.clearCache(true);
             webView2.clearFormData();
+            webView2.loadUrl("javascript:document.open();document.close();");
             webView2.setVisibility(View.GONE);
             webView.setVisibility(View.VISIBLE);
         }
