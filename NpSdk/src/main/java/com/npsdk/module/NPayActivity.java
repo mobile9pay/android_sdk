@@ -42,6 +42,7 @@ import java.util.Map;
 public class NPayActivity extends AppCompatActivity {
     public static final String TAG = NPayActivity.class.getName();
     Map<String, String> headerWebView = NPayLibrary.getInstance().getHeader();
+    @SuppressLint("StaticFieldLeak")
     public static WebView webView, webView2;
     private View btnClose;
     private Toolbar toolbar;
@@ -108,14 +109,15 @@ public class NPayActivity extends AppCompatActivity {
                 return;
             }
 
-            if (route.equals(Actions.SHOP)) {
+            // Các route thuộc danh mục hóa đơn.
+            if (route.equals(Actions.SHOP) || route.contains("BILLING")) {
                 webView.setVisibility(View.GONE);
                 webView2.setVisibility(View.VISIBLE);
-                webView2.loadUrl(Flavor.baseShop + "/hoa-don-thanh-toan/", headerWebView);
+                webView2.loadUrl(Utils.getUrlActionShop(route), headerWebView);
                 showOrHideToolbar();
             } else {
                 builder.scheme("https")
-                        .authority(/*"10.1.20.37:8080"*/ Flavor.baseUrl.replaceAll("https://", ""))
+                        .authority(Flavor.baseUrl.replaceAll("https://", ""))
                         .appendPath("direct")
                         .appendQueryParameter("route", jsonObject.getString("route"))
                         .appendQueryParameter("Merchant-Code", jsonObject.getString("Merchant-Code"))
@@ -127,9 +129,7 @@ public class NPayActivity extends AppCompatActivity {
                     builder.appendQueryParameter("order_id", Utils.convertUrlToOrderId(jsonObject.getString("order_id")));
                 }
                 Log.d(TAG, "onCreate: Flavor.baseUrl ==   " + builder);
-                webView2.clearCache(true);
-                webView2.loadUrl("javascript:document.open();document.close();");
-                webView2.clearHistory();
+                clearWebview2NonToolbar();
                 webView.loadUrl(builder.toString(), headerWebView);
             }
 
@@ -147,7 +147,7 @@ public class NPayActivity extends AppCompatActivity {
                 Log.d(TAG, "shouldOverrideUrlLoading 2: url ==   " + url);
 
                 if (url.endsWith("close-webview")) {
-                    clearWeb2();
+                    clearWebview2WithToolbar();
                     return false;
                 }
 
@@ -167,22 +167,20 @@ public class NPayActivity extends AppCompatActivity {
                                 .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
                                 .appendQueryParameter("platform", "android")
                                 .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url));
-                        webView2.clearCache(true);
-                        webView2.loadUrl("javascript:document.open();document.close();");
-                        webView2.clearHistory();
+                        clearWebview2NonToolbar();
                         webView2.setVisibility(View.GONE);
                         rlOverlay.setVisibility(View.GONE);
                         webView.setVisibility(View.VISIBLE);
                         webView.loadUrl(builder.toString(), headerWebView);
 
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                     return false;
 
                 }
 
                 if (url.startsWith(Flavor.baseUrl) && !url.contains("kyc")) {
-                    clearWeb2();
+                    clearWebview2WithToolbar();
                     webView.loadUrl(url, headerWebView);
                     return false;
                 }
@@ -205,9 +203,7 @@ public class NPayActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (!url.contains(Flavor.baseUrl)) {
                     webView.setVisibility(View.GONE);
-                    webView2.clearCache(true);
-                    webView2.loadUrl("javascript:document.open();document.close();");
-                    webView2.clearHistory();
+                    clearWebview2NonToolbar();
                     webView2.setVisibility(View.VISIBLE);
                     webView2.loadUrl(url, headerWebView);
                     return false;
@@ -237,9 +233,7 @@ public class NPayActivity extends AppCompatActivity {
                 Log.d("onReceive", "onReceive:  ==   " + intent.getAction());
                 if (intent.getAction().equals("webViewBroadcast")) {
                     if (webView2 != null) {
-                        webView2.clearCache(true);
-                        webView2.loadUrl("javascript:document.open();document.close();");
-                        webView2.clearHistory();
+                        clearWebview2NonToolbar();
                     }
                     String getURL = intent.getStringExtra("url");
                     if (getURL.startsWith(Flavor.baseUrl + "/v1/kyc")) {
@@ -316,22 +310,25 @@ public class NPayActivity extends AppCompatActivity {
         webView.clearHistory();
         webView.clearCache(true);
         webView.destroy();
-        webView2.clearCache(true);
-        webView2.destroy();
+        clearWebview2NonToolbar();
         closeCamera();
         super.onDestroy();
     }
 
-    public void clearWeb2() {
+    public void clearWebview2WithToolbar() {
         if (webView2.getVisibility() == View.VISIBLE) {
-            webView2.clearHistory();
-            webView2.clearCache(true);
-            webView2.clearFormData();
-            webView2.loadUrl("javascript:document.open();document.close();");
+            clearWebview2NonToolbar();
             webView2.setVisibility(View.GONE);
             webView.setVisibility(View.VISIBLE);
         }
         showOrHideToolbar();
+    }
+
+    public void clearWebview2NonToolbar() {
+        webView2.clearHistory();
+        webView2.clearCache(true);
+        webView2.clearFormData();
+        webView2.loadUrl("javascript:document.open();document.close();");
     }
 
 
@@ -342,7 +339,7 @@ public class NPayActivity extends AppCompatActivity {
                 if (webView2.getUrl().contains("v1/kyc/ket-qua")) {
                     webView.loadUrl(Flavor.baseUrl + "#home?reload=true");
                 }
-                clearWeb2();
+                clearWebview2WithToolbar();
             }
         });
     }
