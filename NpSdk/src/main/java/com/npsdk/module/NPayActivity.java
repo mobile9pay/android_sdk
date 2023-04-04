@@ -29,6 +29,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.npsdk.module.utils.Actions;
 import com.npsdk.module.utils.Constants;
+import com.npsdk.module.utils.DeviceUtils;
 import com.npsdk.module.utils.Flavor;
 import com.npsdk.module.utils.JsHandler;
 import com.npsdk.module.utils.Utils;
@@ -124,7 +125,8 @@ public class NPayActivity extends AppCompatActivity {
                         .appendQueryParameter("Merchant-Uid", jsonObject.getString("Merchant-Uid"))
                         .appendQueryParameter("App-version-Code", "375")
                         .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
-                        .appendQueryParameter("platform", "android");
+                        .appendQueryParameter("platform", "android")
+                        .appendQueryParameter("device", DeviceUtils.getDevice());
                 if (jsonObject.has("order_id")) {
                     builder.appendQueryParameter("order_id", Utils.convertUrlToOrderId(jsonObject.getString("order_id")));
                 }
@@ -166,7 +168,8 @@ public class NPayActivity extends AppCompatActivity {
                                 .appendQueryParameter("App-version-Code", "375")
                                 .appendQueryParameter("brand_color", String.valueOf(NPayLibrary.getInstance().sdkConfig.getBrandColor()))
                                 .appendQueryParameter("platform", "android")
-                                .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url));
+                                .appendQueryParameter("order_id", Utils.convertUrlToOrderId(url))
+                                .appendQueryParameter("device", DeviceUtils.getDevice());
                         clearWebview2NonToolbar();
                         webView2.setVisibility(View.GONE);
                         rlOverlay.setVisibility(View.GONE);

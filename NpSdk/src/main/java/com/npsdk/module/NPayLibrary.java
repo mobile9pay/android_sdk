@@ -12,7 +12,6 @@ import com.npsdk.LibListener;
 import com.npsdk.module.api.GetInfoTask;
 import com.npsdk.module.api.RefreshTokenTask;
 import com.npsdk.module.model.SdkConfig;
-import com.npsdk.module.utils.Actions;
 import com.npsdk.module.utils.Constants;
 import com.npsdk.module.utils.DeviceUtils;
 import com.npsdk.module.utils.Flavor;
@@ -64,7 +63,7 @@ public class NPayLibrary {
 
 	public void getInfoAccount() {
 		if (Preference.getString(activity, Flavor.prefKey + Constants.ACCESS_TOKEN, "").isEmpty()) {
-			listener.onError(403, "Chưa login");
+			listener.onError(403, "Tài khoản chưa được đăng nhập!");
 			return;
 		}
 		String token = Preference.getString(activity, Flavor.prefKey + Constants.ACCESS_TOKEN, "");
@@ -127,6 +126,7 @@ public class NPayLibrary {
 		header.put("Merchant-Uid", sdkConfig.getUid());
 		header.put("env", sdkConfig.getEnv());
 		header.put("App-Type", "SDK");
+		header.put("Device-Name", DeviceUtils.getDevice());
 		return header;
 	}
 
