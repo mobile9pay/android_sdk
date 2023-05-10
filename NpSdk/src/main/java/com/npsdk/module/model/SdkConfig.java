@@ -1,20 +1,23 @@
 package com.npsdk.module.model;
 
+import android.content.Context;
+
+import com.npsdk.module.utils.DeviceUtils;
+
 import java.io.Serializable;
 
 public class SdkConfig implements Serializable {
+
     private final String merchantCode;
     private final String uid;
     private final String env;
     private final int brandColor;
-    private final String localUrl;
 
     protected SdkConfig(Builder builder) {
         merchantCode = builder.mMerchantCode;
         uid = builder.mUid;
         env = builder.mEnv;
         brandColor = builder.mBrandColor;
-        localUrl = builder.mLocalUrl;
     }
 
     public String getMerchantCode() {
@@ -33,29 +36,23 @@ public class SdkConfig implements Serializable {
         return brandColor;
     }
 
+
     public static class Builder {
         private String mMerchantCode;
         private String mUid;
         private String mEnv;
         private int mBrandColor;
-        private String mLocalUrl;
-
-        public Builder() {
+        private Context context;
+        public Builder(Context context) {
+            this.context = context;
         }
 
-        public Builder(int brandColor, String merchantCode, String uid, String env, String localUrl) {
+        public Builder(String merchantCode, String uid, String env, int brandColor) {
             mMerchantCode = merchantCode;
             mUid = uid;
             mEnv = env;
             mBrandColor = brandColor;
-            mLocalUrl = localUrl;
         }
-
-        public Builder localUrl(String localUrl) {
-            mLocalUrl = localUrl;
-            return this;
-        }
-
 
         public Builder merchantCode(String merchantCode) {
             mMerchantCode = merchantCode;
@@ -63,6 +60,9 @@ public class SdkConfig implements Serializable {
         }
 
         public Builder uid(String uid) {
+            if (uid == null || uid.isEmpty()) {
+                uid = DeviceUtils.getAndroidID(context);
+            }
             mUid = uid;
             return this;
         }

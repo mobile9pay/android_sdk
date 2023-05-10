@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:overScrollMode="always"
             android:scrollbars="none">
 
             <LinearLayout
@@ -213,14 +214,6 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/ic_banner_2" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="30dp"
@@ -392,12 +385,30 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
                     <EditText
                         android:id="@+id/edt_url_paygate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="url..."
+                        android:imeOptions="actionDone"
+                        android:textColor="@color/black"
                         android:maxLines="1"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
                         android:backgroundTint="@android:color/holo_red_light"
                         android:singleLine="true" />
 
@@ -408,97 +419,6 @@
                         android:text="Thanh toán từ cổng" />
 
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="20dp"
-                    android:gravity="center"
-                    android:visibility="visible"
-                    android:weightSum="4">
-
-                    <Button
-                        android:id="@+id/btn_bank_link_manage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:text="Quản lý link bank"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btn_bank_link_add"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:text="Thêm link bank"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:paddingHorizontal="24dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:text="@string/special"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:text="@string/see_more"
-                        android:textColor="#BBBBBB" />
-
-
-                </RelativeLayout>
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginRight="20dp"
-                    android:background="#fefefe">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/banner_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="5dp"
-                            android:adjustViewBounds="true"
-                            android:src="@drawable/ic_banner_bottom_1" />
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="5dp"
-                            android:layout_toRightOf="@+id/banner_1"
-                            android:adjustViewBounds="true"
-                            android:src="@drawable/ic_banner_bottom_1" />
-
-
-                    </RelativeLayout>
-                </HorizontalScrollView>
 
 
             </LinearLayout>

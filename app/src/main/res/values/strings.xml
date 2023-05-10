@@ -18,4 +18,5 @@
     <string name="nap_tien_dt">Nạp tiền\nĐT</string>
     <string name="mua_the_game">Mua thẻ\ngame</string>
     <string name="nap_data">Nạp data\n 3g/4g</string>
+    <string name="phone_change">phone_change</string>
 </resources>

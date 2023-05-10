@@ -1,5 +1,7 @@
 package com.npsdk.module.utils;
 
+import android.content.Context;
+
 import com.npsdk.module.NPayLibrary;
 
 public class Flavor {
@@ -31,5 +33,4 @@ public class Flavor {
                 break;
         }
     }
-
 }

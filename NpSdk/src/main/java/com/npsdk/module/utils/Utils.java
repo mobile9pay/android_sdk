@@ -1,6 +1,8 @@
 package com.npsdk.module.utils;
 
+import android.app.Activity;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
 public class Utils {
     public static String convertUrlToOrderId(String url) {
@@ -63,5 +65,17 @@ public class Utils {
             return Flavor.baseShop + "/hoa-don-thanh-toan/";
         }
         return Flavor.baseShop + "/hoa-don/" + path;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isAcceptingText()){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(),
+                    0
+            );
+        }
     }
 }

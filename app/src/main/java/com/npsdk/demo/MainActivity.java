@@ -1,6 +1,8 @@
 package com.npsdk.demo;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	Toolbar toolbar;
 	EditText edtUrlPaygate;
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({"SetJavaScriptEnabled", "MissingInflatedId"})
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		LinearLayout layout_sdv = findViewById(R.id.layout_sdv);
 		RelativeLayout rlInfo = findViewById(R.id.rl_info);
 		ImageView btn_eyes = findViewById(R.id.btn_eyes);
-		Button btn_bank_link_manage = findViewById(R.id.btn_bank_link_manage);
-		Button btn_bank_link_add = findViewById(R.id.btn_bank_link_add);
 		edtUrlPaygate = findViewById(R.id.edt_url_paygate);
 		Button btnThanhToan = findViewById(R.id.btn_thanh_toan);
 		View btnClose = findViewById(R.id.btnClose);
@@ -75,15 +75,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		ll_mua_the_dich_vu.setOnClickListener(this);
 		ll_mua_the_dt.setOnClickListener(this);
 		ll_nap_data.setOnClickListener(this);
-		btn_bank_link_manage.setOnClickListener(this);
-		btn_bank_link_add.setOnClickListener(this);
 		layout_sdv.setOnClickListener(this);
 		btn_eyes.setOnClickListener(this);
 		rlInfo.setOnClickListener(this);
 		btnClose.setOnClickListener(this);
 		btnThanhToan.setOnClickListener(this);
 
-		SdkConfig sdkConfig = new SdkConfig.Builder().merchantCode("sdk_test").uid("uid").env(NPayLibrary.STAGING).brandColor(0xff15AE62).build();
+		SdkConfig sdkConfig = new SdkConfig.Builder(this).merchantCode("sdk_test").uid(null).env(NPayLibrary.STAGING).brandColor(0xff15AE62).build();
 		initSdk(sdkConfig);
 
 	}
@@ -170,15 +168,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				Log.d(TAG, "onClick: ll_nap_data");
 				NPayLibrary.getInstance().openWallet(Actions.TOPUP_DATA_CARD);
 				break;
-			case R.id.btn_bank_link_manage:
-				Log.d(TAG, "onClick: btn_bank_link_manage");
-//                NPayLibrary.getInstance().openWallet(Actions.BANK_LINK_MANAGE);
-				break;
-			case R.id.btn_bank_link_add:
-				Log.d(TAG, "onClick: btn_bank_link_add");
-//                NPayLibrary.getInstance().openWallet(Actions.ADD_LINK_BANK);
-				break;
-
 			case R.id.rl_info:
 				Log.d(TAG, "onClick: rl_info");
 				break;
@@ -200,12 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				break;
 			case R.id.btn_thanh_toan:
 				//paste url thanh toán vào hàm pay
-				String test = "https://sand-payment.9pay.vn/portal?baseEncode=eyJtZXJjaGFudEtleSI6ImRMNXBDcCIsI\n" +
-						"nRpbWUiOjE2Nzc0ODg4MzIsImludm9pY2Vfbm8iOiJFczRsVVN4eSIsImFtb3VudCI6MTAwMDAsImRlc\n" +
-						"2NyaXB0aW9uIjoiVGhpcyBpcyBkZXNjcmlwdGlvbiIsInJldHVybl91cmwiOiJodHRwOi8vZmNkY2M0N\n" +
-						"zY3YWNiLm5ncm9rLmlvLyIsImJhY2tfdXJsIjoiaHR0cDovL2ZjZGNjNDc2N2FjYi5uZ3Jvay5pby8iL\n" +
-						"CJtZXRob2QiOiI5UEFZIn0%3D&signature=qmfxThHdSJGxwpQilcwJ0zYkPpyZaJkdwrJe1FysRuY%\n" +
-						"3D\n";
+				String test = "";
 				NPayLibrary.getInstance().pay(test);
 				break;
 
@@ -215,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	@Override
 	public void onBackPressed() {
+		super.onBackPressed();
 	}
 
 }
