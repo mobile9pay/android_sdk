@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				break;
 			case R.id.btn_thanh_toan:
 				//paste url thanh toán vào hàm pay
-				String test = "";
+				String test = edtUrlPaygate.getText().toString();
 				NPayLibrary.getInstance().pay(test);
 				break;
 
