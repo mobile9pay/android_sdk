@@ -15,8 +15,6 @@ import com.npsdk.module.NPayLibrary;
 import com.npsdk.module.model.SdkConfig;
 import com.npsdk.module.utils.Actions;
 
-import static com.ninepaysdk.ninepaylibrary.repository.HandleDataKt.handleDataFromSDK;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = "MainActivityLOG";
     TextView userInfo;
@@ -187,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Sai định dạng url", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                handleDataFromSDK(this, url);
+                NPayLibrary.getInstance().pay(url);
                 edtUrlPaygate.setText("");
                 break;
 

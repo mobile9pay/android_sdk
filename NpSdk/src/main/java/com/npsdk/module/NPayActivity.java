@@ -80,8 +80,10 @@ public class NPayActivity extends AppCompatActivity {
 			Uri.Builder builder = new Uri.Builder();
 			JSONObject jsonObject = new JSONObject(data);
 			String route = jsonObject.getString("route");
-			String orderId = jsonObject.getString("order_id");
-			if (orderId == null) orderId = "";
+			String orderId = "";
+			if (jsonObject.has("order_id")) {
+				orderId = jsonObject.getString("order_id");
+			}
 			if (route.equals(Constants.VERIFY_PAYMENT_ROUTE) && !orderId.contains("/merchant/payment/")) {
 				if (orderId.isEmpty()) {
 					Toast.makeText(NPayActivity.this, "Sai định dạng url", Toast.LENGTH_SHORT).show();
