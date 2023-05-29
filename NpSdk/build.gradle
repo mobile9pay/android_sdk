@@ -44,6 +44,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'androidx.webkit:webkit:1.5.0'
     implementation 'com.airbnb.android:lottie:6.0.0'
+
+
 }
 
 afterEvaluate {
@@ -54,7 +56,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.mobile9pay'
                 artifactId = 'NpSdk'
-                version = '1.3.0'
+                version = '1.2.7'
             }
         }
     }
