@@ -20,8 +20,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ninepaysdk.ninepaylibrary.repository.HandleDataKt.handleDataFromSDK;
-
 @SuppressLint("StaticFieldLeak")
 public class NPayLibrary {
     public static final String STAGING = "staging";
@@ -60,10 +58,6 @@ public class NPayLibrary {
             Toast.makeText(activity, "Sai định dạng url thanh toán.", Toast.LENGTH_SHORT).show();
             return;
         }
-        handleDataFromSDK(activity, urlPayment);
-    }
-
-    public void payFromNewSdk(String urlPayment) {
         Intent intent = new Intent(activity, NPayActivity.class);
         intent.putExtra("data", NPayLibrary.getInstance().paymentData(urlPayment));
         activity.startActivity(intent);
