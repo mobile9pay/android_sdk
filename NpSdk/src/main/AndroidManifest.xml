@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.npsdk.module">
+          package="com.npsdk.module">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.hardware.camera.flash"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.webkit.resource.VIDEO_CAPTURE"/>
+    <uses-permission android:name="android.webkit.PermissionRequest"/>
 
+    <queries>
+        <package android:name="vn.ninepay.ewallet"/>
+    </queries>
+
+    <application
+            android:enableOnBackInvokedCallback="false"
+            android:hardwareAccelerated="true"
+            android:usesCleartextTraffic="true">
+        <activity
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+                android:name="com.npsdk.module.NPayActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"/>
+    </application>
 </manifest>
